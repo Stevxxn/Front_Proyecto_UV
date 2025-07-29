@@ -1,202 +1,42 @@
-<div class="container-fluid py-4 uv-dashboard">
-  <!-- Header -->
-  <div class="row mb-4 align-items-center">
-    <div class="col-md-8">
-      <h1 class="display-5 fw-bold">
-        <i class="fas fa-sun me-2"></i>Monitoreo UV
-        <span class="weather-emoji">{{ weatherEmoji }}</span>
-      </h1>
-    </div>
-    <div class="col-md-4">
-      <div class="input-group">
-        <select class="form-select" [(ngModel)]="dateRange" (change)="onDateRangeChange()">
-          <option *ngFor="let range of availableDateRanges" 
-                  [value]="range.value" 
-                  [disabled]="!range.hasData">
-            {{ range.label }} {{ !range.hasData ? '(sin datos)' : '' }}
-          </option>
-        </select>
-        <button class="btn btn-primary" (click)="refreshData()" title="Actualizar datos">
-          <i class="fas fa-sync-alt"></i>
-        </button>
+<div class="uv-container">
+    <!-- Tarjeta principal estilo Google -->
+    <div class="uv-current-card" [style.background]="getUVBackground()">
+      <div class="uv-current-content">
+        <h2>Índice UV Actual</h2>
+        <div class="uv-value">{{ currentUV?.value || '--' }}</div>
+        <div class="uv-risk-level">{{ currentUV?.riskLevel || 'Cargando...' }}</div>
+        <div class="uv-recommendation">{{ currentUV?.recommendation || '' }}</div>
       </div>
     </div>
-    
-    <!-- Selector de fechas personalizadas -->
-    <div *ngIf="showCustomDatePicker" class="row mt-3">
-      <div class="col-md-6">
-        <label class="form-label">Desde</label>
-        <input type="date" class="form-control" [(ngModel)]="startDate" (change)="loadCustomData()">
-      </div>
-      <div class="col-md-6">
-        <label class="form-label">Hasta</label>
-        <input type="date" class="form-control" [(ngModel)]="endDate" (change)="loadCustomData()">
+
+    <!-- Gráfico de líneas interactivo -->
+    <div class="uv-chart-container">
+      <ngx-charts-line-chart
+        [scheme]="colorScheme"
+        [results]="uvChartData"
+        [xAxis]="chartOptions.showXAxis"
+        [yAxis]="chartOptions.showYAxis"
+        [xAxisLabel]="chartOptions.xAxisLabel"
+        [yAxisLabel]="chartOptions.yAxisLabel"
+        [autoScale]="chartOptions.autoScale"
+        [animations]="chartOptions.animations"
+        (select)="setCurrentUVFromChart($event)">
+        
+        <ng-template #tooltipTemplate let-model="model">
+          <div class="uv-tooltip">
+            <div>Fecha: {{ model.name | date:'shortTime' }}</div>
+            <div>UV: {{ model.value }}</div>
+            <div>Nivel: {{ model.extra.riskLevel }}</div>
+          </div>
+        </ng-template>
+      </ngx-charts-line-chart>
+    </div>
+
+    <!-- Leyenda de colores -->
+    <div class="uv-legend">
+      <div class="uv-legend-item" *ngFor="let level of uvLevels">
+        <span class="uv-legend-color" [style.background]="level.color"></span>
+        <span>{{ level.name }} ({{ level.range }})</span>
       </div>
     </div>
   </div>
-
-  <!-- Tarjeta de estado actual -->
-  <div class="row mb-4">
-    <div class="col-md-4">
-      <div class="card uv-current-card h-100" [style.background]="getUVBackground()">
-        <div class="card-body text-center text-white">
-          <h2 class="card-title">
-            Índice UV Actual <span class="uv-emoji">{{ currentUV?.emoji || '⏳' }}</span>
-          </h2>
-          <div class="uv-timestamp mb-3" *ngIf="currentUV">
-            {{ currentUV.timestamp | date:'medium' }}
-          </div>
-          
-          <div class="display-1 fw-bold my-3">{{ currentUV?.value || '--' }}</div>
-          <div class="h4 mb-3">UVI</div>
-          
-          <div class="h5 mb-2">{{ currentUV?.riskLevel || 'Cargando...' }}</div>
-          <div class="mb-3">{{ currentUV?.recommendation || '' }}</div>
-          
-          <div class="weather-prediction mt-3 pt-3 border-top border-white border-opacity-25">
-            <div class="h4">{{ weatherEmoji }}</div>
-            <div class="small">{{ weatherPrediction || 'Analizando datos...' }}</div>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- Gráfico -->
-    <div class="col-md-8">
-      <div class="card h-100">
-        <div class="card-body">
-          <div class="d-flex justify-content-between align-items-center mb-3">
-            <h3 class="card-title mb-0">
-              <i class="fas fa-chart-line me-2"></i>Historial de Radiación UV
-            </h3>
-            <div>
-              <!-- Mostrar punto seleccionado -->
-              <div *ngIf="selectedUVPoint" class="selected-point-info me-3 d-inline-block">
-                <span class="badge bg-primary">
-                  Seleccionado: {{ selectedUVPoint.value }} UVI a las {{ selectedUVPoint.name | date:'shortTime' }}
-                </span>
-                <button class="btn btn-sm btn-outline-secondary ms-2" (click)="selectedUVPoint = null">
-                  <i class="fas fa-times"></i>
-                </button>
-              </div>
-              
-              <div class="btn-group">
-                <button class="btn btn-sm btn-outline-primary" (click)="toggleCirclePoints()">
-                  <i class="fas" [class.fa-eye]="!showCirclePoints" [class.fa-eye-slash]="showCirclePoints"></i>
-                  {{ showCirclePoints ? 'Ocultar puntos' : 'Mostrar puntos' }}
-                </button>
-                <span class="badge bg-light text-dark me-2">
-                  Máx: {{ maxUV || '--' }} UVI
-                </span>
-                <span class="badge bg-light text-dark me-2">
-                  Mín: {{ minUV || '--' }} UVI
-                </span>
-                <span class="badge bg-light text-dark">
-                  Prom: {{ avgUV || '--' }} UVI
-                </span>
-              </div>
-            </div>
-          </div>
-          
-          <div class="chart-container" style="height: 300px;">
-            <ngx-charts-line-chart
-              [scheme]="colorScheme"
-              [results]="uvChartData"
-              [xAxis]="true"
-              [yAxis]="true"
-              [showXAxisLabel]="true"
-              [showYAxisLabel]="true"
-              [xAxisLabel]="'Fecha/Hora'"
-              [yAxisLabel]="'Índice UV'"
-              [gradient]="false"
-              [autoScale]="true"
-              [animations]="true"
-              [tooltipDisabled]="tooltipDisabled"
-              [curve]="showCirclePoints ? 'linear' : 'cardinal'"
-              (select)="onChartClick($event)"
-              (hover)="onChartHover($event)">
-              
-              <ng-template #tooltipTemplate let-model="model">
-                <div class="uv-tooltip p-2">
-                  <div class="fw-bold">{{ model.name | date:'mediumTime' }}</div>
-                  <div>UV: {{ model.value }} UVI</div>
-                  <div>Nivel: {{ model.extra.riskLevel }} {{ model.extra.emoji }}</div>
-                </div>
-              </ng-template>
-            </ngx-charts-line-chart>
-            
-            <!-- Controles del gráfico -->
-            <div class="chart-controls">
-              <button class="btn btn-sm btn-outline-primary" (click)="toggleCirclePoints()">
-                <i class="fas" [class.fa-eye]="!showCirclePoints" [class.fa-eye-slash]="showCirclePoints"></i>
-                {{ showCirclePoints ? 'Ocultar puntos' : 'Mostrar puntos' }}
-              </button>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- Leyenda y datos adicionales -->
-  <div class="row">
-    <div class="col-md-6">
-      <div class="card h-100">
-        <div class="card-body">
-          <h3 class="card-title">
-            <i class="fas fa-info-circle me-2"></i>Niveles UV
-          </h3>
-          <div class="row">
-            <div class="col-12" *ngFor="let level of uvLevels">
-              <div class="d-flex align-items-center mb-2 p-2 rounded" 
-                    [style.background]="level.color + '20'">
-                <div class="me-3" [style.color]="level.color">
-                  <i class="fas fa-circle fa-lg"></i>
-                </div>
-                <div class="flex-grow-1">
-                  <strong>{{ level.name }}</strong> ({{ level.range }} UVI)
-                </div>
-                <div class="ms-2">{{ level.emoji }}</div>
-                <div class="small text-muted ms-3">{{ level.recommendation }}</div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <div class="col-md-6">
-      <div class="card h-100">
-        <div class="card-body">
-          <h3 class="card-title">
-            <i class="fas fa-clock me-2"></i>Últimos Registros
-          </h3>
-          <div class="table-responsive">
-            <table class="table table-hover">
-              <thead>
-                <tr>
-                  <th>Hora</th>
-                  <th>Valor UV</th>
-                  <th>Nivel</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr *ngFor="let item of recentData">
-                  <td>{{ adjustTimezone(item.timestamp) | date:'shortTime' }}</td>
-                  <td [style.color]="getUVColor(item.value)">
-                    {{ item.value }} UVI
-                  </td>
-                  <td>
-                    <span class="badge" [style.background-color]="getUVColor(item.value)">
-                      {{ getUVLevelInfo(item.value).name }}
-                    </span>
-                  </td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-</div>

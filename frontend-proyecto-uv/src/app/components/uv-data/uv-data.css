@@ -1,107 +1,61 @@
-/* Ajustes generales */
-.uv-dashboard {
-  background-color: #f8f9fa;
-  min-height: 100vh;
-}
-
-/* Tarjeta UV actual */
 .uv-current-card {
-  border: none;
-  border-radius: 12px;
-  box-shadow: 0 4px 20px rgba(0,0,0,0.1);
-  transition: all 0.3s ease;
+  border-radius: 8px;
+  padding: 1rem;
+  margin-bottom: 1rem;
+  color: white;
+  transition: background 0.3s ease;
 }
 
-.uv-current-card:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 6px 24px rgba(0,0,0,0.15);
+.uv-current-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
-/* Gráfico */
-.chart-container {
-  width: 100%;
-  position: relative;
+.uv-value {
+  font-size: 3rem;
+  font-weight: bold;
+  margin: 0.5rem 0;
 }
 
-/* Tooltip personalizado */
+.uv-risk-level {
+  font-size: 1.5rem;
+  margin-bottom: 0.5rem;
+}
+
+.uv-recommendation {
+  font-size: 1rem;
+  text-align: center;
+}
+
+.uv-chart-container {
+  height: 400px;
+  margin: 1rem 0;
+}
+
+.uv-legend {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 1rem;
+  margin-top: 1rem;
+}
+
+.uv-legend-item {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.uv-legend-color {
+  width: 20px;
+  height: 20px;
+  border-radius: 4px;
+}
+
 .uv-tooltip {
-  background: white !important;
-  border-radius: 8px !important;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.15) !important;
-  border: none !important;
-}
-
-/* Emojis */
-.weather-emoji, .uv-emoji {
-  font-size: 1.2em;
-}
-
-/* Estilos para interactividad del gráfico */
-.selected-point-info {
-  background-color: rgba(63, 81, 181, 0.1);
+  background: white;
+  padding: 0.5rem;
   border-radius: 4px;
-  padding: 4px 8px;
-  transition: all 0.3s ease;
-}
-
-.chart-container {
-  position: relative;
-}
-
-/* Estilos para los puntos del gráfico */
-.show-points circle {
-  opacity: 1;
-  stroke-width: 2px;
-  stroke: white;
-}
-
-circle {
-  opacity: 0;
-  transition: all 0.3s ease;
-}
-
-circle:hover {
-  opacity: 1;
-  stroke-width: 3px;
-  r: 6;
-}
-
-/* Controles del gráfico */
-.chart-controls {
-  position: absolute;
-  top: 10px;
-  right: 10px;
-  z-index: 10;
-  background: rgba(255, 255, 255, 0.8);
-  padding: 5px;
-  border-radius: 4px;
-}
-
-/* Colores para niveles UV */
-.uv-level-low { color: #4CAF50; }
-.uv-level-moderate { color: #FFEB3B; }
-.uv-level-high { color: #FF9800; }
-.uv-level-veryhigh { color: #F44336; }
-.uv-level-extreme { color: #9C27B0; }
-
-/* Responsive */
-@media (max-width: 768px) {
-  .uv-current-card {
-    margin-bottom: 1.5rem;
-  }
-  
-  .chart-header {
-    flex-direction: column;
-    align-items: flex-start;
-  }
-  
-  .btn-group {
-    margin-top: 0.5rem;
-    width: 100%;
-  }
-  
-  .selected-point-info {
-    margin-bottom: 0.5rem;
-    width: 100%;
-  }
+  box-shadow: 0 2px 4px rgba(0,0,0,0.2);
 }
