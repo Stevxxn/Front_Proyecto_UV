@@ -1,0 +1,107 @@
+/* Ajustes generales */
+.uv-dashboard {
+  background-color: #f8f9fa;
+  min-height: 100vh;
+}
+
+/* Tarjeta UV actual */
+.uv-current-card {
+  border: none;
+  border-radius: 12px;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+  transition: all 0.3s ease;
+}
+
+.uv-current-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 24px rgba(0,0,0,0.15);
+}
+
+/* Gráfico */
+.chart-container {
+  width: 100%;
+  position: relative;
+}
+
+/* Tooltip personalizado */
+.uv-tooltip {
+  background: white !important;
+  border-radius: 8px !important;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.15) !important;
+  border: none !important;
+}
+
+/* Emojis */
+.weather-emoji, .uv-emoji {
+  font-size: 1.2em;
+}
+
+/* Estilos para interactividad del gráfico */
+.selected-point-info {
+  background-color: rgba(63, 81, 181, 0.1);
+  border-radius: 4px;
+  padding: 4px 8px;
+  transition: all 0.3s ease;
+}
+
+.chart-container {
+  position: relative;
+}
+
+/* Estilos para los puntos del gráfico */
+.show-points circle {
+  opacity: 1;
+  stroke-width: 2px;
+  stroke: white;
+}
+
+circle {
+  opacity: 0;
+  transition: all 0.3s ease;
+}
+
+circle:hover {
+  opacity: 1;
+  stroke-width: 3px;
+  r: 6;
+}
+
+/* Controles del gráfico */
+.chart-controls {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  z-index: 10;
+  background: rgba(255, 255, 255, 0.8);
+  padding: 5px;
+  border-radius: 4px;
+}
+
+/* Colores para niveles UV */
+.uv-level-low { color: #4CAF50; }
+.uv-level-moderate { color: #FFEB3B; }
+.uv-level-high { color: #FF9800; }
+.uv-level-veryhigh { color: #F44336; }
+.uv-level-extreme { color: #9C27B0; }
+
+/* Responsive */
+@media (max-width: 768px) {
+  .uv-current-card {
+    margin-bottom: 1.5rem;
+  }
+  
+  .chart-header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  
+  .btn-group {
+    margin-top: 0.5rem;
+    width: 100%;
+  }
+  
+  .selected-point-info {
+    margin-bottom: 0.5rem;
+    width: 100%;
+  }
+}

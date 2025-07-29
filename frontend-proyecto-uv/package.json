@@ -1,0 +1,45 @@
+{
+  "name": "frontend-proyecto-uv",
+  "version": "0.0.0",
+  "scripts": {
+    "ng": "ng",
+    "start": "ng serve",
+    "start:local": "ng serve --host localhost --port 4200",
+    "start:network": "ng serve --host 0.0.0.0 --port 4200",
+    "start:ip": "ng serve --host 192.168.1.44 --port 4200",
+    "start:proxy": "ng serve --proxy-config proxy.conf.json --host 192.168.1.44",
+    "build": "ng build",
+    "watch": "ng build --watch --configuration development",
+    "test": "ng test"
+  },
+  "private": true,
+  "dependencies": {
+    "@angular/common": "^20.1.0",
+    "@angular/compiler": "^20.1.0",
+    "@angular/core": "^20.1.0",
+    "@angular/forms": "^20.1.0",
+    "@angular/platform-browser": "^20.1.0",
+    "@angular/router": "^20.1.0",
+    "@fortawesome/fontawesome-free": "^7.0.0",
+    "@swimlane/ngx-charts": "^23.0.0-alpha.0",
+    "bootstrap": "^5.3.7",
+    "d3": "^7.9.0",
+    "rxjs": "^7.8.2",
+    "tslib": "^2.3.0"
+  },
+  "devDependencies": {
+    "@angular/build": "^20.1.3",
+    "@angular/cli": "^20.1.3",
+    "@angular/compiler-cli": "^20.1.0",
+    "@babel/core": "^7.28.0",
+    "@babel/types": "^7.28.2",
+    "@types/jasmine": "~5.1.0",
+    "jasmine-core": "~5.8.0",
+    "karma": "~6.4.0",
+    "karma-chrome-launcher": "~3.2.0",
+    "karma-coverage": "~2.2.0",
+    "karma-jasmine": "~5.1.0",
+    "karma-jasmine-html-reporter": "~2.1.0",
+    "typescript": "~5.8.2"
+  }
+}
